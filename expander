@@ -62,7 +62,7 @@ local HomeTab = Window:Tab("Início", "rbxassetid://10888331510")
 local PlayerTab = Window:Tab("Jogadores", "rbxassetid://12296135476")
 local UtilityTab = Window:Tab("Utilidades", "rbxassetid://15426471035")
 
-HomeTab:InfoLabel("SCRIPT DE JULES E BRICE")
+HomeTab:InfoLabel("SCRIPT DA JULES E BRICE")
 
 -- CONFIGURACOES --
 
