@@ -12,9 +12,9 @@ local CoreGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 
 local function isNumber(str)
-  if tonumber(str) ~= nil or str == 'inf' then
-    return true
-  end
+    if tonumber(str) ~= nil or str == 'inf' then
+        return true
+    end
 end
 
 getgenv().HitboxSize = 15
@@ -47,7 +47,7 @@ Toggle.BackgroundTransparency = 0.660
 Toggle.Position = UDim2.new(0, 0, 0.454706937, 0)
 Toggle.Size = UDim2.new(0.0650164187, 0, 0.0888099447, 0)
 Toggle.Font = Enum.Font.SourceSans
-Toggle.Text = "" -- Deixando vazio
+Toggle.Text = "" -- Botão sem texto
 Toggle.TextScaled = true
 Toggle.TextColor3 = Color3.fromRGB(40, 40, 40)
 Toggle.TextSize = 24.000
@@ -58,13 +58,13 @@ Toggle.MouseButton1Click:connect(function()
     Library:ToggleUI()
 end)
 
-local HomeTab = Window:Tab("Início","rbxassetid://10888331510")
-local PlayerTab = Window:Tab("Jogadores","rbxassetid://12296135476")
-local UtilidadesTab = Window:Tab("Utilidades","rbxassetid://12308581351")
+local HomeTab = Window:Tab("Início", "rbxassetid://10888331510")
+local PlayerTab = Window:Tab("Jogadores", "rbxassetid://12296135476")
+local UtilityTab = Window:Tab("Utilidades", "rbxassetid://15426471035")
 
-HomeTab:InfoLabel("Script especificamente para Jules e Brice!")
+HomeTab:InfoLabel("SCRIPT DE JULES E BRICE")
 
--- CONFIGURAÇÕES --
+-- CONFIGURACOES --
 
 HomeTab:Section("Configurações")
 
@@ -76,48 +76,54 @@ HomeTab:TextBox("Transparência da Hitbox", function(number)
     getgenv().HitboxTransparency = number
 end)
 
+HomeTab:Section("Principal")
+
 HomeTab:Toggle("Ativar Hitbox", function(state)
-	getgenv().HitboxStatus = state
+    getgenv().HitboxStatus = state
     game:GetService('RunService').RenderStepped:connect(function()
-		if HitboxStatus == true then
-			for i,v in next, game:GetService('Players'):GetPlayers() do
-				if v.Name ~= game:GetService('Players').LocalPlayer.Name then
-					pcall(function()
-						v.Character.HumanoidRootPart.Size = Vector3.new(HitboxSize, HitboxSize, HitboxSize)
-						v.Character.HumanoidRootPart.Transparency = HitboxTransparency
-						v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Really black")
-						v.Character.HumanoidRootPart.Material = "Neon"
-						v.Character.HumanoidRootPart.CanCollide = false
-					end)
-				end
-			end
-		else
-		    for i,v in next, game:GetService('Players'):GetPlayers() do
-				if v.Name ~= game:GetService('Players').LocalPlayer.Name then
-					pcall(function()
-						v.Character.HumanoidRootPart.Size = Vector3.new(2,2,1)
-						v.Character.HumanoidRootPart.Transparency = 1
-						v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Medium stone grey")
-						v.Character.HumanoidRootPart.Material = "Plastic"
-						v.Character.HumanoidRootPart.CanCollide = false
-					end)
-				end
-			end
-		end
-	end)
+        if HitboxStatus == true and TeamCheck == false then
+            for i, v in next, game:GetService('Players'):GetPlayers() do
+                if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+                    pcall(function()
+                        v.Character.HumanoidRootPart.Size = Vector3.new(HitboxSize, HitboxSize, HitboxSize)
+                        v.Character.HumanoidRootPart.Transparency = HitboxTransparency
+                        v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Really black")
+                        v.Character.HumanoidRootPart.Material = "Neon"
+                        v.Character.HumanoidRootPart.CanCollide = false
+                    end)
+                end
+            end
+        elseif HitboxStatus == true and TeamCheck == true then
+            for i, v in next, game:GetService('Players'):GetPlayers() do
+                if game:GetService('Players').LocalPlayer.Team ~= v.Team then
+                    pcall(function()
+                        v.Character.HumanoidRootPart.Size = Vector3.new(HitboxSize, HitboxSize, HitboxSize)
+                        v.Character.HumanoidRootPart.Transparency = HitboxTransparency
+                        v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Really black")
+                        v.Character.HumanoidRootPart.Material = "Neon"
+                        v.Character.HumanoidRootPart.CanCollide = false
+                    end)
+                end
+            end
+        else
+            for i, v in next, game:GetService('Players'):GetPlayers() do
+                if v.Name ~= game:GetService('Players').LocalPlayer.Name then
+                    pcall(function()
+                        v.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+                        v.Character.HumanoidRootPart.Transparency = 1
+                        v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Medium stone grey")
+                        v.Character.HumanoidRootPart.Material = "Plastic"
+                        v.Character.HumanoidRootPart.CanCollide = false
+                    end)
+                end
+            end
+        end
+    end)
 end)
-
--- CONFIGURAÇÕES DE UI --
-
-HomeTab:Section("Configurações de UI")
 
 HomeTab:Keybind("Esconder UI", Enum.KeyCode.F, function()
     Library:ToggleUI()
 end)
-
--- JOGADORES --
-
-PlayerTab:Section("Jogadores")
 
 PlayerTab:TextBox("Velocidade", function(value)
     getgenv().Walkspeed = value
@@ -136,33 +142,30 @@ PlayerTab:Toggle("Ativar Pulo Infinito", function(state)
 end)
 
 PlayerTab:Toggle("Super Velocidade", function(s)
-	getgenv().TPWalk = s
-	local hb = game:GetService("RunService").Heartbeat
-	local player = game:GetService("Players")
-	local lplr = player.LocalPlayer
-	local chr = lplr.Character
-	local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
-	while getgenv().TPWalk and hb:Wait() and chr and hum and hum.Parent do
-	  if hum.MoveDirection.Magnitude > 0 then
-	    if getgenv().TPSpeed and isNumber(getgenv().TPSpeed) then
-	      chr:TranslateBy(hum.MoveDirection * tonumber(getgenv().TPSpeed))
-	    else
-	      chr:TranslateBy(hum.MoveDirection)
-	    end
-	  end
-	end
+    getgenv().TPWalk = s
+    local hb = game:GetService("RunService").Heartbeat
+    local player = game:GetService("Players")
+    local lplr = player.LocalPlayer
+    local chr = lplr.Character
+    local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+    while getgenv().TPWalk and hb:Wait() and chr and hum and hum.Parent do
+        if hum.MoveDirection.Magnitude > 0 then
+            if getgenv().TPSpeed and isNumber(getgenv().TPSpeed) then
+                chr:TranslateBy(hum.MoveDirection * tonumber(getgenv().TPSpeed))
+            else
+                chr:TranslateBy(hum.MoveDirection)
+            end
+        end
+    end
 end)
 
--- UTILIDADES --
+UtilityTab:Section("Utilidades")
 
-UtilidadesTab:Section("Utilidades")
-
-UtilidadesTab:Button("Usar Void", function()
+UtilityTab:Button("Usar Void", function()
     local player = game.Players.LocalPlayer
     local character = player.Character
     local rootPart = character:FindFirstChild("HumanoidRootPart")
-
+    
     local maxDistance = 2147483647 * math.sqrt(3) / 2
-
     rootPart.CFrame = CFrame.new(maxDistance, 0, 0)
 end)
