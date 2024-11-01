@@ -1,0 +1,44 @@
+local players = game.Players:GetPlayers()
+local index = 1
+
+local function updateSpectate()
+    local target = players[index]
+    if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+        workspace.CurrentCamera.CameraSubject = target.Character.HumanoidRootPart
+    end
+end
+
+game:GetService("UserInputService").InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.Left then
+        index = index - 1
+        if index < 1 then
+            index = #players
+        end
+        updateSpectate()
+    elseif input.KeyCode == Enum.KeyCode.Right then
+        index = index + 1
+        if index > #players then
+            index = 1
+        end
+        updateSpectate()
+    end
+end)
+
+game:GetService("Players").PlayerRemoving:Connect(function(player)
+    for i, p in ipairs(players) do
+        if p == player then
+            table.remove(players, i)
+            if index > #players then
+                index = 1
+            end
+            updateSpectate()
+            break
+        end
+    end
+end)
+
+game:GetService("Players").PlayerAdded:Connect(function(player)
+    table.insert(players, player)
+end)
+
+updateSpectate()
